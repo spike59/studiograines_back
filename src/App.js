@@ -1,25 +1,46 @@
 import './App.css';
-import {Routes,Route} from 'react-router-dom';
-import {Account, Admin, Home, Login, Logout, Register, User} from './views';
-import { Layout } from './ui/layout';
+import {  AccountRenew, AccountValidation, Account, Login, Login2, Logout, Register } from './views/auth';
+import { Admin, Home, NotFound, User} from './views';
+import { AdminLayout, Layout } from './ui/';
 
+import { useContext } from 'react';
+import { Routes, Route, BrowserRouter } from 'react-router-dom';
+import { ProfilContext } from './contexts/profil_context';
+import './public/css/login.css'
 
 function App() {
+  const { profil } = useContext(ProfilContext);
   return (
-    <div className="App">
+    <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route path="/" index element={<Home />}></Route>
-          <Route path="/register" index element={<Register />}></Route>
-          <Route path="/account/validation" index element={<Account />}></Route>
-          <Route path="/account/renew" index element={<Account />}></Route>
-          <Route path="/login" index element={<Login />}></Route>
-          <Route path="/logout" index element={<Logout />}></Route>
-          <Route path="/user" index element={<User />}></Route>
-          <Route path="/admin" index element={<Admin />}></Route>
+          {!profil.user &&
+            <>
+              <Route path="/account/register" element={<Register />}></Route>
+              <Route path="/account/validation" element={<AccountValidation />}></Route>
+              <Route path="/account/renew" element={<AccountRenew />}></Route>
+              <Route path="/account/login" element={<Login />}></Route>
+              <Route path="/account/login2" element={<Login2 />}></Route>
+            </>
+          }
+          {profil.user &&
+            <>
+              <Route path="/account" element={<Account />}></Route>
+              <Route path="/account/logout" element={<Logout />}></Route>
+              <Route path="/user" element={<User />}></Route>
+              <Route path="/*" element={<NotFound />}></Route>
+            </>
+          }
         </Route>
+          {profil.user && profil.user.role === 'Admin' &&
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route path="/admin/" index element={<Admin />}></Route>
+            </Route>
+          }
+        <Route path="*" element={<NotFound />}></Route>
       </Routes>
-    </div>
+    </BrowserRouter>
   );
 }
 

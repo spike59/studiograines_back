@@ -3,8 +3,8 @@ import {Outlet} from 'react-router-dom';
 import {Nav} from './nav';
 import { ProfilContext } from '../contexts/profil_context';
 
-export function Layout(){
-    //console.log("layout props",props);
+export function AdminLayout(props){
+    console.log("layout props",props);
     //const {profil} = props;
     const {profil} = useContext(ProfilContext);
     return(
